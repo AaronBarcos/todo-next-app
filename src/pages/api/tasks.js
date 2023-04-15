@@ -12,8 +12,8 @@ export default async function handler(req, res) {
       res.json(myPost.ops[0]);
       break;
     case "GET":
-      const allPosts = await db.collection("allPosts").find({}).toArray();
-      res.json({ status: 200, data: allPosts });
+      const allPosts = await db.collection("posts").find({}).toArray();
+      res.json(allPosts);
       break;
   }
 }
