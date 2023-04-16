@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import { model } from 'mongoose';
 
-const postSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -15,6 +16,6 @@ const postSchema = new mongoose.Schema({
   },
 });
 
-const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);
+const Task = model('Task', taskSchema);
 
 export default Task;

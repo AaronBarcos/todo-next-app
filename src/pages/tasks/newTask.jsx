@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
-const NewPost = () => {
+const NewTask = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [postsState, setPostsState] = useState([]);
+  const [taskState, setTaskState] = useState([]);
+
+  const router = useRouter();
 
   useEffect(() => {
     // Aquí puedes hacer una llamada API para obtener todos los posts existentes
     // y actualizar el estado de los posts
-    const allPosts = []; // Aquí reemplaza con los posts obtenidos de la API
-    setPostsState(allPosts);
+    const allTasks = []; // Aquí reemplaza con los posts obtenidos de la API
+    setTaskState(allTasks);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -25,9 +28,9 @@ const NewPost = () => {
       }),
     });
 
-    const newPost = await res.json();
+    const newTask = await res.json();
 
-    setPostsState([...postsState, newPost]);
+    setTaskState([...taskState, newTask]);
     setTitle("");
     setContent("");
     setLoading(false);
@@ -35,7 +38,10 @@ const NewPost = () => {
 
   return (
     <div>
-      <h1>Create a new post</h1>
+      <button onClick={() => router.back()} >
+        Go back
+      </button>
+      <h1>Create a new task</h1>
       <form onSubmit={handleSubmit}>
         <label>
           Title:
@@ -62,4 +68,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default NewTask;

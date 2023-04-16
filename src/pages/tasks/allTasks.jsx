@@ -1,28 +1,33 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
-const Posts = () => {
-  const [posts, setPosts] = useState([]);
+const Tasks = () => {
+  const [tasks, setTasks] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
-    const getPosts = async () => {
+    const getTasks = async () => {
       const res = await fetch("http://localhost:3000/api/tasks");
-      const postsData = await res.json();
-      setPosts(postsData);
+      const taskData = await res.json();
+      setTasks(taskData);
     };
-    getPosts();
+    getTasks();
   }, []);
 
   return (
     <div>
-      <h1>All Posts</h1>
-      {posts.map((post) => (
-        <div key={post.id}>
-          <h2>{post.title}</h2>
-          <p>{post.content}</p>
+    <button onClick={() => router.back()} >
+      Go back
+    </button>
+      <h1>All Tasks</h1>
+      {tasks.map((task) => (
+        <div key={task.id}>
+          <h2>{task.title}</h2>
+          <p>{task.content}</p>
         </div>
       ))}
     </div>
   );
 };
 
-export default Posts;
+export default Tasks;

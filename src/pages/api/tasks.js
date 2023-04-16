@@ -4,16 +4,16 @@ import clientPromise from "../../config/db";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
-  const db = client.db("nextjs-mongodb-demo");
+  const db = client.db("nextjs-mongodb-todo-app");
   switch (req.method) {
     case "POST":
       let bodyObject = JSON.parse(req.body);
-      let myPost = await db.collection("posts").insertOne(bodyObject);
-      res.json(myPost.ops[0]);
+      let task = await db.collection("tasks").insertOne(bodyObject);
+      res.json(task.ops[0]);
       break;
     case "GET":
-      const allPosts = await db.collection("posts").find({}).toArray();
-      res.json(allPosts);
+      const allTasks = await db.collection("tasks").find({}).toArray();
+      res.json(allTasks);
       break;
   }
 }
