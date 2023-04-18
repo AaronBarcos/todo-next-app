@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -7,12 +8,17 @@ const Tasks = () => {
 
   useEffect(() => {
     const getTasks = async () => {
-      const res = await fetch("http://localhost:3000/api/tasks");
-      const taskData = await res.json();
-      setTasks(taskData);
+      const res = await axios.get("http://localhost:3000/api/tasks");
+      setTasks(res.data);
     };
     getTasks();
   }, []);
+
+  const deleteTasks = async (idTask) => {
+    const { data } = await axios.delete(`http://localhost:3000/api/${idTask}`);
+    setTasks(tasks.filter((task) => task._id !== idTask));
+    console.log(data.message);
+  };
 
   return (
     <div>
@@ -21,9 +27,10 @@ const Tasks = () => {
     </button>
       <h1>All Tasks</h1>
       {tasks.map((task) => (
-        <div key={task.id}>
+        <div key={task._id}>
           <h2>{task.title}</h2>
           <p>{task.content}</p>
+          <button onClick={() => deleteTasks(task._id)}>Delete</button>
         </div>
       ))}
     </div>

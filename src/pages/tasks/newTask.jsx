@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const NewTask = () => {
   const [title, setTitle] = useState("");
@@ -20,15 +21,12 @@ const NewTask = () => {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch("http://localhost:3000/api/tasks", {
-      method: "POST",
-      body: JSON.stringify({
-        title: title,
-        content: content,
-      }),
+    const res = await axios.post("http://localhost:3000/api/tasks", {
+      title,
+      content,
     });
 
-    const newTask = await res.json();
+    const newTask = res.data;
 
     setTaskState([...taskState, newTask]);
     setTitle("");

@@ -1,31 +1,38 @@
-// mongodb.js
+import mongoose from "mongoose";
 
-import { MongoClient } from 'mongodb'
+const DB = process.env.MONGODB_URI;
 
-const uri = process.env.MONGODB_URI
-const options = {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
+if (!DB) {
+	throw new Error(
+		"Define environment variable inside .env.local"
+	);
 }
 
-let client
-let clientPromise
+let cached = global.mongoose;
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Add Mongo URI to .env.local')
+if (!cached) {
+	cached = global.mongoose = { connection: null, promise: null };
 }
 
-if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options)
-    global._mongoClientPromise = client.connect()
-  }
-  clientPromise = global._mongoClientPromise
-} else {
-  client = new MongoClient(uri, options)
-  clientPromise = client.connect()
-}
+const dbConnect = async () => {
+	if (cached.connection) {
+		return cached.connection;
+	}
 
-export default clientPromise
+	if (!cached.promise) {
+		const options = {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		};
+
+		cached.promise = mongoose.connect(DB, options).then((mongoose) => {
+			return mongoose;
+		});
+	}
+	cached.connection = await cached.promise;
+	return cached.connection;
+};
+
+export default dbConnect;
 
 

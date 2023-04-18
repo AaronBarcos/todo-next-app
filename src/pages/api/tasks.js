@@ -1,19 +1,22 @@
-// tasks.js
-
-import clientPromise from "../../config/db";
+import dbConnect from "../../config/db";
+import Task from "../../models/task";
 
 export default async function handler(req, res) {
-  const client = await clientPromise;
-  const db = client.db("nextjs-mongodb-todo-app");
-  switch (req.method) {
+
+  const { method } = req;
+
+   await dbConnect();
+
+  switch (method) {
     case "POST":
-      let bodyObject = JSON.parse(req.body);
-      let task = await db.collection("tasks").insertOne(bodyObject);
-      res.json(task.ops[0]);
+      const newTask = await new Task(req.body).save();
+      res.json({ data: newTask, message: "Task created successfully" }); 
       break;
     case "GET":
-      const allTasks = await db.collection("tasks").find({}).toArray();
-      res.json(allTasks);
+      const allTasks = await Task.find();
+      res.status(200).json(allTasks);
       break;
+    default:
+      res.status(405).end();
   }
 }

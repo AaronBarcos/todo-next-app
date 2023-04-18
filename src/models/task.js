@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { model } from 'mongoose';
 
 const taskSchema = new mongoose.Schema({
   title: {
@@ -16,6 +15,4 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-const Task = model('Task', taskSchema);
-
-export default Task;
+export default mongoose.models.Task || mongoose.model('Task', taskSchema);
