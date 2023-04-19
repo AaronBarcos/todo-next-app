@@ -13,6 +13,13 @@ export default async function handler(req, res) {
             await Task.findByIdAndDelete(idTask);
             res.json({ message: "Task deleted successfully" });
             break;
+        case "PUT":
+            await Task.findByIdAndUpdate(idTask, req.body, {
+                new: true,
+                runValidators: true,
+                });
+            res.json({ message: "Task updated successfully" });
+            break;
         default:
             res.status(405).end();
     }
