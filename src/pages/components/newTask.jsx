@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const NewTask = ( {onTaskCreated} ) => {
+const NewTask = ({ onTaskCreated }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  // const [completed, setCompleted] = useState([false]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -16,12 +17,12 @@ const NewTask = ( {onTaskCreated} ) => {
     e.preventDefault();
     setLoading(true);
 
-    const {data} = await axios.post("http://localhost:3000/api/tasks", {
+    await axios.post("http://localhost:3000/api/tasks", {
       title,
       content,
     });
 
-    onTaskCreated()
+    onTaskCreated();
     setTitle("");
     setContent("");
     setLoading(false);
