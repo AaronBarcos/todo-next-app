@@ -1,34 +1,27 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import axios from "axios";
 
-const NewTask = () => {
+const NewTask = ( {onTaskCreated} ) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [taskState, setTaskState] = useState([]);
-
-  const router = useRouter();
 
   useEffect(() => {
     // Aquí puedes hacer una llamada API para obtener todos los posts existentes
     // y actualizar el estado de los posts
     const allTasks = []; // Aquí reemplaza con los posts obtenidos de la API
-    setTaskState(allTasks);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const res = await axios.post("http://localhost:3000/api/tasks", {
+    const {data} = await axios.post("http://localhost:3000/api/tasks", {
       title,
       content,
     });
 
-    const newTask = res.data;
-
-    setTaskState([...taskState, newTask]);
+    onTaskCreated()
     setTitle("");
     setContent("");
     setLoading(false);
@@ -36,10 +29,7 @@ const NewTask = () => {
 
   return (
     <div>
-      <button onClick={() => router.back()} >
-        Go back
-      </button>
-      <h1>Create a new task</h1>
+      <h3>Create a new task</h3>
       <form onSubmit={handleSubmit}>
         <label>
           Title:

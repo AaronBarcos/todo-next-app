@@ -8,10 +8,6 @@ function index() {
       <Link href="/tasks/allTasks">
         View all tasks
       </Link>
-      <br />
-      <Link href="/tasks/newTask">
-        Create a new task
-      </Link>
     </div>
   )
 }

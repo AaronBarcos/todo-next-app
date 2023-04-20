@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import NewTask from "../components/newTask";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
-    const getTasks = async () => {
+    getTasks();
+  }, []);
+
+  const getTasks = async () => {
       const res = await axios.get("http://localhost:3000/api/tasks");
       setTasks(res.data.map((task) => ({ ...task, showForm: false })));
     };
-    getTasks();
-  }, []);
 
   const deleteTask = async (idTask) => {
     const { data } = await axios.delete(`http://localhost:3000/api/${idTask}`);
@@ -53,9 +55,15 @@ const Tasks = () => {
     console.log(data.message);
   };
 
+  const handleTaskCreated = () => {
+    getTasks();
+  };
+
   return (
+    <>
+    <button onClick={() => router.back()}>Go back</button>
+    <NewTask onTaskCreated={handleTaskCreated} />
     <div>
-      <button onClick={() => router.back()}>Go back</button>
       <h1>All Tasks</h1>
       {tasks.map((task) => (
         <div key={task._id}>
@@ -92,6 +100,7 @@ const Tasks = () => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 
