@@ -13,7 +13,14 @@ const Tasks = () => {
 
   const getTasks = async () => {
     const res = await axios.get("http://localhost:3000/api/tasks");
-    setTasks(res.data.map((task) => ({ ...task, showForm: false })));
+    setTasks(
+      res.data.map((task) => ({
+        ...task,
+        showForm: false,
+        backgroundColor: task.completed ? "#3A3A3A" : "grey",
+        errorMessage: "",
+      }))
+    );
   };
 
   const deleteTask = async (idTask) => {
@@ -38,58 +45,95 @@ const Tasks = () => {
     e.preventDefault();
     const title = e.target.title.value;
     const content = e.target.content.value;
-    const { data } = await axios.put(`http://localhost:3000/api/${idTask}`, {
-      title,
-      content,
+
+    try {
+      const { data } = await axios.put(`http://localhost:3000/api/${idTask}`, {
+        title,
+        content,
+      });
+      setTasks(
+        tasks.map((task) => {
+          if (task._id === idTask) {
+            return {
+              ...task,
+              title,
+              content,
+              showForm: false,
+              errorMessage: "",
+            };
+          } else {
+            return task;
+          }
+        })
+      );
+      console.log(data.message);
+    } catch (error) {
+      console.error(error);
+      setTasks(
+        tasks.map((task) => {
+          if (task._id === idTask) {
+            return { ...task, errorMessage: error.response.data.errorMessage };
+          } else {
+            return task;
+          }
+        })
+      );
+    }
+  };
+
+  const toggleCompleted = async (idTask) => {
+    const taskToUpdate = tasks.find((task) => task._id === idTask);
+    if (!taskToUpdate) {
+      console.log(`Task with ID ${idTask} not found`);
+      return;
+    }
+    await axios.put(`http://localhost:3000/api/${idTask}`, {
+      completed: !taskToUpdate.completed,
     });
     setTasks(
       tasks.map((task) => {
         if (task._id === idTask) {
-          return { ...task, title, content, showForm: false };
+          return { ...task, completed: !taskToUpdate.completed };
         } else {
           return task;
         }
       })
     );
-    console.log(data.message);
+    getTasks();
   };
-
-  const toggleCompleted = async (e, idTask) => {
-    const { data } = await axios.put(`http://localhost:3000/api/${idTask}`, {
-      completed: !e.target.checked,
-    });
-    setTasks(
-      tasks.map((task) => {
-        if (task._id === idTask) {
-          return { ...task, completed: !e.target.checked };
-        } else {
-          return task;
-        }
-      })
-    );
-    console.log(data.message);
-  };
-
 
   return (
-    <>
-      <button onClick={() => router.back()}>Go back</button>
+    <div className="bg-zinc-950 p-4">
+      <button
+        className="bg-gray-700 text-white py-2 px-4 rounded-md mb-4"
+        onClick={() => router.back()}
+      >
+        Go back
+      </button>
       <NewTask onTaskCreated={getTasks} />
-      <div>
-        <h1>All Tasks</h1>
+      <div className="mx-auto max-w-md">
+        <h1 className="text-3xl font-bold mb-4 m-4 text-white">All Tasks</h1>
         {tasks.map((task) => (
-          <div key={task._id}>
+          <div key={task._id} className="bg-white p-4 mb-4 rounded-md">
             {task.showForm === false ? (
-              <div style={{ backgroundColor: task.backgroundColor }}>
+              <div
+                className="p-6 rounded-md"
+                style={{ backgroundColor: task.backgroundColor }}
+              >
                 <input
                   type="checkbox"
                   name="completed"
                   id="completed"
                   checked={task.completed}
-                  onChange={(e) => toggleCompleted(e, task._id)}
+                  onChange={() => toggleCompleted(task._id)}
+                  className="mr-2"
                 />
-                <h3>{task.title}</h3>
-                <p>{task.content}</p>
+                <h3 className="text-lg font-bold">{task.title}</h3>
+                <h5 className="text-white mb-2">{task.content}</h5>
+                <p className="text-white">
+                  Task created on:{" "}
+                  {new Date(task.createdAt).toLocaleString().split(",")[0]}
+                </p>
               </div>
             ) : (
               <form onSubmit={(e) => updateTask(e, task._id)}>
@@ -98,28 +142,52 @@ const Tasks = () => {
                   name="title"
                   id="title"
                   defaultValue={task.title}
+                  className="block w-full mb-2 rounded-md border-gray-400 border py-2 px-3"
                 />
                 <input
                   type="text"
                   name="content"
                   id="content"
                   defaultValue={task.content}
+                  className="block w-full mb-2 rounded-md border-gray-400 border py-2 px-3"
                 />
-                <input type="submit" value="Update" />
+                <input
+                  type="submit"
+                  value="Update"
+                  className="bg-gray-700 text-white py-2 px-4 rounded-md"
+                />
+                {task.errorMessage && (
+                  <p className="text-red-500 mt-3">{task.errorMessage}</p>
+                )}
               </form>
             )}
             {task.showForm === true ? (
-              <button onClick={() => toggleShowForm(task._id)}>Cancel</button>
+              <button
+                onClick={() => toggleShowForm(task._id)}
+                className="bg-gray-400 text-white py-2 px-4 rounded-md mt-2"
+              >
+                Cancel
+              </button>
             ) : (
-              <div>
-                <button onClick={() => toggleShowForm(task._id)}>Edit</button>
-                <button onClick={() => deleteTask(task._id)}>Delete</button>
+              <div className="mt-4">
+                <button
+                  onClick={() => toggleShowForm(task._id)}
+                  className="bg-gray-400 text-white py-2 px-4 rounded-md mr-2"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteTask(task._id)}
+                  className="bg-gray-700 text-white py-2 px-4 rounded-md"
+                >
+                  Delete
+                </button>
               </div>
             )}
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

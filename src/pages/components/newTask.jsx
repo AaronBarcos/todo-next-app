@@ -4,23 +4,22 @@ import axios from "axios";
 const NewTask = ({ onTaskCreated }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  // const [completed, setCompleted] = useState([false]);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Aquí puedes hacer una llamada API para obtener todos los posts existentes
-    // y actualizar el estado de los posts
-    const allTasks = []; // Aquí reemplaza con los posts obtenidos de la API
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    await axios.post("http://localhost:3000/api/tasks", {
-      title,
-      content,
-    });
+    try {
+      await axios.post("http://localhost:3000/api/tasks", {
+        title,
+        content,
+      });
+      setErrorMessage("");
+    } catch (error) {
+      setErrorMessage(error.response.data.errorMessage);
+    }
 
     onTaskCreated();
     setTitle("");
@@ -29,29 +28,40 @@ const NewTask = ({ onTaskCreated }) => {
   };
 
   return (
-    <div>
-      <h3>Create a new task</h3>
+    <div className="bg-white p-6 rounded-lg shadow-lg mx-auto max-w-md">
+      <h3 className="text-gray-800 text-lg font-bold mb-4">
+        Create a new task
+      </h3>
       <form onSubmit={handleSubmit}>
-        <label>
+        <label className="block text-gray-700 font-bold mb-2">
           Title:
           <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </label>
         <br />
-        <label>
+        <label className="block text-gray-700 font-bold mb-2">
           Content:
           <textarea
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
         </label>
         <br />
-        <button type="submit" disabled={loading}>
+        <button
+          className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="submit"
+          disabled={loading}
+        >
           {loading ? "Loading..." : "Submit"}
         </button>
+        {errorMessage && (
+          <p className="text-red-500 text-xs italic pt-3">{errorMessage}</p>
+        )}
       </form>
     </div>
   );
