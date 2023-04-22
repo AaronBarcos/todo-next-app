@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import axios from "axios";
 import NewTask from "../components/newTask";
 
@@ -104,6 +105,9 @@ const Tasks = () => {
 
   return (
     <div className="bg-zinc-950 p-4">
+      <Head>
+        <title>Todo NextJs App</title>
+      </Head>
       <button
         className="bg-gray-700 text-white py-2 px-4 rounded-md mb-4"
         onClick={() => router.back()}
