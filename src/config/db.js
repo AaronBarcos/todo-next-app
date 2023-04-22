@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+const cors = require("cors");
+app.use(cors());
+
 const DB = process.env.MONGODB_URI;
 
 if (!DB) {
