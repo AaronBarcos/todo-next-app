@@ -6,13 +6,14 @@ const NewTask = ({ onTaskCreated }) => {
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { DEV_URL, PROD_URL } = process.env;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:3000/api/tasks", {
+      await axios.post(`${DEV_URL || PROD_URL}/api/tasks`, {
         title,
         content,
       });

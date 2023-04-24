@@ -7,13 +7,17 @@ import NewTask from "../components/newTask";
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const router = useRouter();
+  const {DEV_URL, PROD_URL} = process.env;
 
   useEffect(() => {
     getTasks();
   }, []);
 
   const getTasks = async () => {
-    const res = await axios.get("http://localhost:3000/api/tasks");
+
+    const res = await axios.get(
+      "https://nextjs-tasks-app.vercel.app/api/tasks"
+    );
     setTasks(
       res.data.map((task) => ({
         ...task,
@@ -25,7 +29,7 @@ const Tasks = () => {
   };
 
   const deleteTask = async (idTask) => {
-    const { data } = await axios.delete(`http://localhost:3000/api/${idTask}`);
+    const { data } = await axios.delete(`${DEV_URL || PROD_URL}/api/${idTask}`);
     setTasks(tasks.filter((task) => task._id !== idTask));
     console.log(data.message);
   };
@@ -48,7 +52,7 @@ const Tasks = () => {
     const content = e.target.content.value;
 
     try {
-      const { data } = await axios.put(`http://localhost:3000/api/${idTask}`, {
+      const { data } = await axios.put(`${DEV_URL || PROD_URL}/api/${idTask}`, {
         title,
         content,
       });
@@ -88,7 +92,7 @@ const Tasks = () => {
       console.log(`Task with ID ${idTask} not found`);
       return;
     }
-    await axios.put(`http://localhost:3000/api/${idTask}`, {
+    await axios.put(`${DEV_URL || PROD_URL}/api/${idTask}`, {
       completed: !taskToUpdate.completed,
     });
     setTasks(
