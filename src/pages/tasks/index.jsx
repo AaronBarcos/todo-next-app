@@ -28,7 +28,6 @@ const Tasks = () => {
   const deleteTask = async (idTask) => {
     const { data } = await axios.delete(`/api/${idTask}`);
     setTasks(tasks.filter((task) => task._id !== idTask));
-    console.log(data.message);
   };
 
   const toggleShowForm = (taskId) => {
@@ -68,9 +67,7 @@ const Tasks = () => {
           }
         })
       );
-      console.log(data.message);
     } catch (error) {
-      console.error(error);
       setTasks(
         tasks.map((task) => {
           if (task._id === idTask) {
@@ -86,7 +83,6 @@ const Tasks = () => {
   const toggleCompleted = async (idTask) => {
     const taskToUpdate = tasks.find((task) => task._id === idTask);
     if (!taskToUpdate) {
-      console.log(`Task with ID ${idTask} not found`);
       return;
     }
     await axios.put(`/api/${idTask}`, {
