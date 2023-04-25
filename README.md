@@ -15,6 +15,7 @@ Users can add, edit, and delete tasks from the to-do list.
 Tasks are stored in a MongoDB database, allowing for persistent data storage.
 The Next.js framework is used for server-side rendering and client-side functionality.
 Tailwind is used for styling, allowing for easy customization and responsive design.
+The project is deployed on Vercel, a cloud platform for static sites and serverless functions. 
 
 ## Technologies Used
 
