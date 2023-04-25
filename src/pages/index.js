@@ -11,7 +11,7 @@ function index() {
       <h1 className="text-3xl text-white font-bold text-center pr-6">
         To-do list
       </h1>
-      <Link className="text-white" href="/tasks/allTasks">
+      <Link className="text-white" href="/tasks">
         View all tasks
       </Link>
     </div>

@@ -2,22 +2,20 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import axios from "axios";
-import NewTask from "../components/newTask";
+import NewTask from "../../components/newTask";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const router = useRouter();
-  const {DEV_URL, PROD_URL} = process.env;
+  const dev = process.env.NODE_ENV !== "production";
+  // const { DEV_URL, PROD_URL } = process.env;
 
   useEffect(() => {
     getTasks();
   }, []);
 
   const getTasks = async () => {
-
-    const res = await axios.get(
-      "https://nextjs-tasks-app.vercel.app/api/tasks"
-    );
+    const res = await axios.get(`/api/tasks`);
     setTasks(
       res.data.map((task) => ({
         ...task,
@@ -29,7 +27,7 @@ const Tasks = () => {
   };
 
   const deleteTask = async (idTask) => {
-    const { data } = await axios.delete(`${DEV_URL || PROD_URL}/api/${idTask}`);
+    const { data } = await axios.delete(`/api/${idTask}`);
     setTasks(tasks.filter((task) => task._id !== idTask));
     console.log(data.message);
   };
@@ -52,7 +50,7 @@ const Tasks = () => {
     const content = e.target.content.value;
 
     try {
-      const { data } = await axios.put(`${DEV_URL || PROD_URL}/api/${idTask}`, {
+      const { data } = await axios.put(`/api/${idTask}`, {
         title,
         content,
       });
