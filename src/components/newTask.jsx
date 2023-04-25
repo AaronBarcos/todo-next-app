@@ -7,7 +7,6 @@ const NewTask = ({ onTaskCreated }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const dev = process.env.NODE_ENV !== "production";
-  // const { DEV_URL, PROD_URL } = process.env;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

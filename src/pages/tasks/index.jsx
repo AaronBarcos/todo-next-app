@@ -8,7 +8,6 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const router = useRouter();
   const dev = process.env.NODE_ENV !== "production";
-  // const { DEV_URL, PROD_URL } = process.env;
 
   useEffect(() => {
     getTasks();
@@ -90,7 +89,7 @@ const Tasks = () => {
       console.log(`Task with ID ${idTask} not found`);
       return;
     }
-    await axios.put(`${DEV_URL || PROD_URL}/api/${idTask}`, {
+    await axios.put(`/api/${idTask}`, {
       completed: !taskToUpdate.completed,
     });
     setTasks(
